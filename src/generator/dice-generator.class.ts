@@ -1,5 +1,5 @@
-import * as Ast from '../ast';
-import { Generator } from './generator.interface';
+import * as Ast from '../ast/index.ts';
+import { Generator } from './generator.interface.ts';
 
 export class DiceGenerator implements Generator<string> {
   generate(expression: Ast.ExpressionNode): string {

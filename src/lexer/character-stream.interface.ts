@@ -1,7 +1,6 @@
-
 export interface CharacterStream {
-  getCurrentCharacter(): string;
+  getCurrentCharacter(): string | null;
   getCurrentPosition(): number;
-  getNextCharacter(): string;
-  peekNextCharacter(): string;
+  getNextCharacter(): string | null;
+  peekNextCharacter(): string | null;
 }

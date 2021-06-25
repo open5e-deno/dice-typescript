@@ -1,4 +1,4 @@
-import { FunctionDefinitionList } from './function-definition-list.class';
+import { FunctionDefinitionList } from './function-definition-list.class.ts';
 
 export const DefaultFunctionDefinitions = new FunctionDefinitionList();
 

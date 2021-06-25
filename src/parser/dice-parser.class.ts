@@ -1,7 +1,7 @@
-import * as Ast from '../ast';
-import { Lexer, TokenType } from '../lexer';
-import { BasicParser } from './basic-parser.class';
-import { ParseResult } from './parse-result.class';
+import * as Ast from '../ast/index.ts';
+import { Lexer, Token, TokenType } from '../lexer/index.ts';
+import { BasicParser } from './basic-parser.class.ts';
+import { ParseResult } from './parse-result.class.ts';
 
 const BooleanOperatorMap: { [token: string]: Ast.NodeType } = {};
 BooleanOperatorMap[TokenType.Equals] = Ast.NodeType.Equal;
@@ -92,7 +92,7 @@ export class DiceParser extends BasicParser {
   }
 
   parseFactor(result: ParseResult): Ast.ExpressionNode {
-    let root: Ast.ExpressionNode;
+    let root!: Ast.ExpressionNode;
     const token = this.lexer.peekNextToken();
     switch (token.type) {
       case TokenType.Identifier:
@@ -124,7 +124,7 @@ export class DiceParser extends BasicParser {
     return root;
   }
 
-  parseSimpleFactor(result: ParseResult): Ast.ExpressionNode {
+  parseSimpleFactor(result: ParseResult) {
     const token = this.lexer.peekNextToken();
     switch (token.type) {
       case TokenType.Number: return this.parseNumber(result);
@@ -134,7 +134,7 @@ export class DiceParser extends BasicParser {
     }
   }
 
-  parseFunction(result: ParseResult): Ast.ExpressionNode {
+  parseFunction(result: ParseResult) {
     const functionName = this.expectAndConsume(result, TokenType.Identifier);
     const root = Ast.Factory.create(Ast.NodeType.Function)
       .setAttribute('name', functionName.value);
@@ -210,19 +210,21 @@ export class DiceParser extends BasicParser {
     if (!rollTimes) { rollTimes = this.parseSimpleFactor(result); }
     const token = this.expectAndConsume(result, TokenType.Identifier);
 
-    const root = Ast.Factory.create(Ast.NodeType.Dice);
+    const root: Ast.ExpressionNode = Ast.Factory.create(Ast.NodeType.Dice);
     root.addChild(rollTimes);
 
     switch (token.value) {
-      case 'd':
+      case 'd':{
         const sidesToken = this.expectAndConsume(result, TokenType.Number);
         root.addChild(Ast.Factory.create(Ast.NodeType.DiceSides))
-          .setAttribute('value', Number(sidesToken.value));
+          ?.setAttribute('value', Number(sidesToken.value));
         break;
-      case 'dF':
+      }
+      case 'dF':{
         root.addChild(Ast.Factory.create(Ast.NodeType.DiceSides))
-          .setAttribute('value', 'fate');
+          ?.setAttribute('value', 'fate');
         break;
+      }    
     }
 
     return root;
@@ -375,7 +377,7 @@ export class DiceParser extends BasicParser {
 
   parseCompareModifier(result: ParseResult, lhs?: Ast.ExpressionNode): Ast.ExpressionNode {
     const token = this.lexer.peekNextToken();
-    let root: Ast.ExpressionNode;
+    let root!: Ast.ExpressionNode;
     if (token.type === TokenType.Number) {
       root = Ast.Factory.create(Ast.NodeType.Equal);
     } else if (Object.keys(BooleanOperatorMap).indexOf(token.type.toString()) > -1) {
@@ -391,7 +393,7 @@ export class DiceParser extends BasicParser {
 
   private parseDiceModifiers(result: ParseResult, root: Ast.ExpressionNode) {
     while (true) {
-      const token = this.lexer.peekNextToken();
+      const token: Token = this.lexer.peekNextToken();
       if (Object.keys(BooleanOperatorMap).indexOf(token.type.toString()) > -1) {
         root = this.parseCompareModifier(result, root);
       } else if (token.type === TokenType.Identifier) {

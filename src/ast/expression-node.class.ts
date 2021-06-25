@@ -1,14 +1,16 @@
-import { Factory } from './factory.class';
-import { NodeAttributes } from './node-attributes.class';
-import { NodeType } from './node-type.enum';
+import { Factory } from './factory.class.ts';
+import { NodeAttributes } from './node-attributes.class.ts';
+import { NodeType } from './node-type.enum.ts';
 
 export class ExpressionNode {
   readonly type: NodeType;
-  private attributes: NodeAttributes;
-  private parent: ExpressionNode;
-  private children: ExpressionNode[];
+  private attributes!: NodeAttributes;
+  private parent: ExpressionNode | null;
+  private children?: ExpressionNode[];
 
-  constructor(type: NodeType, parent: ExpressionNode = null) {
+  [key: string]: any;
+
+  constructor(type: NodeType, parent: ExpressionNode | null = null) {
     this.type = type;
     this.parent = parent;
   }
@@ -28,11 +30,11 @@ export class ExpressionNode {
     return copy;
   }
 
-  addChild(node: ExpressionNode): ExpressionNode {
+  addChild(node?: ExpressionNode) {
     return this.insertChild(node);
   }
 
-  insertChild(node: ExpressionNode, index?: number): ExpressionNode {
+  insertChild(node?: ExpressionNode, index?: number) {
     if (node) {
       if (node === this) { throw new Error('Cannot add a node as a child of itself.'); }
       if (!this.children) { this.children = []; }
@@ -46,13 +48,13 @@ export class ExpressionNode {
     this.children = undefined;
   }
 
-  removeChild(expression: ExpressionNode): ExpressionNode {
+  removeChild(expression: ExpressionNode) {
     if (expression.parent !== this) { return null; }
-    this.children.splice(this.children.indexOf(expression, 1));
+    this.children?.splice(this.children.indexOf(expression, 1));
     return expression;
   }
 
-  getParent(): ExpressionNode {
+  getParent() {
     return this.parent;
   }
 
@@ -84,7 +86,7 @@ export class ExpressionNode {
 
   toJSON(): any {
     const keys = Object.keys(this).filter(k => k !== 'parent');
-    const obj = {};
+    const obj: Record<string,any> = {};
     keys.forEach(k => obj[k] = this[k]);
     return obj;
   }

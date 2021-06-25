@@ -1,8 +1,8 @@
-import { ExpressionNode } from './expression-node.class';
-import { NodeType } from './node-type.enum';
+import { ExpressionNode } from './expression-node.class.ts';
+import { NodeType } from './node-type.enum.ts';
 
 export class Factory {
-  static create(type: NodeType): ExpressionNode {
+  static create(type: NodeType) {
     return new ExpressionNode(type);
   }
 }

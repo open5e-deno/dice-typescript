@@ -1,13 +1,13 @@
-import { CharacterStream } from './character-stream.interface';
-import { Lexer } from './lexer.interface';
-import { StringCharacterStream } from './string-character-stream.class';
-import { Token } from './token.class';
-import { TokenType } from './token-type.enum';
+import { CharacterStream } from './character-stream.interface.ts';
+import { Lexer } from './lexer.interface.ts';
+import { StringCharacterStream } from './string-character-stream.class.ts';
+import { Token } from './token.class.ts';
+import { TokenType } from './token-type.enum.ts';
 
 export class DiceLexer implements Lexer {
   protected stream: CharacterStream;
-  private currentToken: Token;
-  private nextToken: Token;
+  private currentToken!: Token;
+  private nextToken: Token | null;
 
   private numCharRegex: RegExp = /[0-9]/;
   private idCharRegex: RegExp = /[a-zA-Z]/;
@@ -20,6 +20,7 @@ export class DiceLexer implements Lexer {
     } else {
       throw new Error('Unrecognized input type. input must be of type \'CharacterStream | string\'.');
     }
+    this.nextToken = null;
   }
 
   private isCharacterStream(input: any): input is CharacterStream {
@@ -44,25 +45,25 @@ export class DiceLexer implements Lexer {
   }
 
   protected parseIdentifier(): Token {
-    let buffer = this.stream.getCurrentCharacter();
+    let buffer = this.stream.getCurrentCharacter() ?? '';
     // TODO: klnull?!
-    while (this.stream.peekNextCharacter() && this.idCharRegex.test(this.stream.peekNextCharacter())) {
+    while (this.stream.peekNextCharacter() && this.idCharRegex.test(this.stream.peekNextCharacter() ?? '')) {
       buffer += this.stream.getNextCharacter();
     }
     return this.createToken(TokenType.Identifier, buffer);
   }
 
   protected parseNumber(): Token {
-    let buffer = this.stream.getCurrentCharacter();
+    let buffer = this.stream.getCurrentCharacter() ?? '';
     let hasDot = false;
-    let nextChar = this.stream.peekNextCharacter();
+    let nextChar = this.stream.peekNextCharacter() ?? '';
     while (nextChar === '.' || this.numCharRegex.test(nextChar)) {
       if (nextChar === '.') {
         if (hasDot) { break; }
         hasDot = true;
       }
       buffer += this.stream.getNextCharacter();
-      nextChar = this.stream.peekNextCharacter();
+      nextChar = this.stream.peekNextCharacter() ?? '';
     }
     return this.createToken(TokenType.Number, buffer);
   }
@@ -79,7 +80,7 @@ export class DiceLexer implements Lexer {
 
   private constructNextToken() {
     let curChar: string;
-    while (curChar = this.stream.getNextCharacter()) {
+    while (curChar = this.stream.getNextCharacter()?? '') {
       switch (true) {
         case this.idCharRegex.test(curChar): return this.parseIdentifier();
         case this.numCharRegex.test(curChar): return this.parseNumber();

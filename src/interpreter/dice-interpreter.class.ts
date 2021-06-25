@@ -1,12 +1,12 @@
-import * as Ast from '../ast';
-import { DiceGenerator } from '../generator';
-import { DefaultRandomProvider, RandomProvider } from '../random';
-import { DefaultFunctionDefinitions } from './default-function-definitions';
-import { DiceResult } from './dice-result.class';
-import { InterpreterError } from './error-message.class';
-import { FunctionDefinitionList } from './function-definition-list.class';
-import { Interpreter } from './interpreter.interface';
-import { InterpreterOptions } from './interpreter-options.interface';
+import * as Ast from '../ast/index.ts';
+import { DiceGenerator } from '../generator/index.ts';
+import { DefaultRandomProvider, RandomProvider } from '../random/index.ts';
+import { DefaultFunctionDefinitions } from './default-function-definitions.ts';
+import { DiceResult } from './dice-result.class.ts';
+import { InterpreterError } from './error-message.class.ts';
+import { FunctionDefinitionList } from './function-definition-list.class.ts';
+import { Interpreter } from './interpreter.interface.ts';
+import { InterpreterOptions } from './interpreter-options.interface.ts';
 
 interface SortedDiceRolls {
   rolls: Ast.ExpressionNode[];
@@ -129,7 +129,7 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
     return 0;
   }
 
-  evaluateDice(expression: Ast.ExpressionNode, errors: InterpreterError[]): number {
+  evaluateDice(expression: Ast.ExpressionNode, errors: InterpreterError[]): number | null {
     if (!this.expectChildCount(expression, 2, errors)) { return 0; }
     const num = Math.round(this.evaluate(expression.getChild(0), errors));
     const { maxRollTimes, maxDiceSides } = this.options;
@@ -181,12 +181,12 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
     const times = this.evaluate(expression.getChild(1), errors);
 
     const parent = expression.getParent();
-    parent.removeChild(expression);
+    parent?.removeChild(expression);
 
     let total = 0;
     for (let x = 0; x < times; x++) {
       const copy = lhs.copy();
-      parent.addChild(copy);
+      parent?.addChild(copy);
       total += this.evaluate(copy, errors);
     }
     return total;
@@ -446,7 +446,7 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
     return total;
   }
 
-  private findDiceOrGroupNode(expression: Ast.ExpressionNode, errors: InterpreterError[]): Ast.ExpressionNode {
+  private findDiceOrGroupNode(expression: Ast.ExpressionNode, errors: InterpreterError[]): Ast.ExpressionNode | null {
     if (expression.type === Ast.NodeType.Dice || expression.type === Ast.NodeType.Group) {
       return expression;
     }
@@ -469,9 +469,9 @@ export class DiceInterpreter implements Interpreter<DiceResult> {
 
     let sortOrder;
     if (direction === 'descending') {
-      sortOrder = (a, b) => b.getAttribute('value') - a.getAttribute('value');
+      sortOrder = (a:Ast.ExpressionNode, b:Ast.ExpressionNode) => b.getAttribute('value') - a.getAttribute('value');
     } else if (direction === 'ascending') {
-      sortOrder = (a, b) => a.getAttribute('value') - b.getAttribute('value');
+      sortOrder = (a:Ast.ExpressionNode, b:Ast.ExpressionNode) => a.getAttribute('value') - b.getAttribute('value');
     } else {
       errors.push(new InterpreterError(`Unknown sort direction: ${direction}. Expected 'ascending' or 'descending'.`, dice));
     }

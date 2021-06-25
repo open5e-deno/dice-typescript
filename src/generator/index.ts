@@ -1,2 +1,2 @@
-export * from './dice-generator.class';
-export * from './generator.interface';
+export * from './dice-generator.class.ts';
+export * from './generator.interface.ts';

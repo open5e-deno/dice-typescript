@@ -1,6 +1,6 @@
-import { ExpressionNode } from '../ast';
-import { InterpreterError } from '../interpreter/error-message.class';
-import { Result } from './result.class';
+import { ExpressionNode } from '../ast/index.ts';
+import { InterpreterError } from '../interpreter/error-message.class.ts';
+import { Result } from './result.class.ts';
 
 export class DiceResult extends Result {
   readonly successes: number;

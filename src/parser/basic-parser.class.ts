@@ -1,7 +1,7 @@
-import { DiceLexer, Lexer, Token, TokenType } from '../lexer';
-import { ParserError } from './error-message.class';
-import { ParseResult } from './parse-result.class';
-import { Parser } from './parser.interface';
+import { DiceLexer, Lexer, Token, TokenType } from '../lexer/index.ts';
+import { ParserError } from './error-message.class.ts';
+import { ParseResult } from './parse-result.class.ts';
+import { Parser } from './parser.interface.ts';
 
 export abstract class BasicParser implements Parser {
   protected readonly lexer: Lexer;
@@ -42,6 +42,6 @@ export abstract class BasicParser implements Parser {
   }
 
   protected errorMessage(result: ParseResult, message: string, token: Token) {
-    result.errors.push(new ParserError(message, token, new Error().stack));
+    result.errors.push(new ParserError(message, token, new Error().stack ?? ''));
   }
 }

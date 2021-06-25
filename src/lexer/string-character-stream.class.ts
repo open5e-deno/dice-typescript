@@ -1,27 +1,27 @@
-import { CharacterStream } from './character-stream.interface';
+import { CharacterStream } from "./character-stream.interface.ts";
 
 export class StringCharacterStream implements CharacterStream {
   private index = -1;
 
-  constructor(private readonly input: string) { }
+  constructor(private readonly input: string) {}
 
   getCurrentPosition(): number {
     return this.index;
   }
 
-  getNextCharacter(): string {
+  getNextCharacter() {
     this.index = Math.min(this.index + 1, this.input.length);
-    if (this.index >= this.input.length) { return null; }
+    if (this.index >= this.input.length)return null;
     return this.input[this.index];
   }
 
-  getCurrentCharacter(): string {
-    if (this.index < 0 || this.index >= this.input.length) { return null; }
+  getCurrentCharacter() {
+    if (this.index < 0 || this.index >= this.input.length)return null;
     return this.input[this.index];
   }
 
-  peekNextCharacter(): string {
-    if (this.index >= this.input.length) { return null; }
+  peekNextCharacter() {
+    if (this.index >= this.input.length)return null;
     return this.input[this.index + 1];
   }
 }

@@ -1,5 +1,4 @@
-import { ExpressionNode } from '../ast';
-
+import {ExpressionNode} from "../ast/expression-node.class.ts";
 export class Result {
   readonly reducedExpression: ExpressionNode;
   readonly renderedExpression: string;

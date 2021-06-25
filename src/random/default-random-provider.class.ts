@@ -1,16 +1,7 @@
-import * as Random from 'random-js';
-
-import { RandomProvider } from './random-provider.class';
+import { RandomProvider } from "./random-provider.class.ts";
 
 export class DefaultRandomProvider implements RandomProvider {
-
-  private random: Random;
-
-  constructor() {
-    this.random = new Random(Random.engines.mt19937().autoSeed());
-  }
-
   numberBetween(min: number, max: number) {
-    return this.random.integer(min, max);
+    return Math.floor(Math.random() * (max - min + 1) + min);
   }
 }
