@@ -6,14 +6,6 @@ A TypeScript library for parsing dice rolling expressions, most commonly used in
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
-
-### Installing
-
-```batchfile
-npm install dice-typescript
-```
-
 ### Usage
 
 #### Basic Usage
